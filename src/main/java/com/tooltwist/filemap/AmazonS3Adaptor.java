@@ -153,7 +153,7 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 	}
 	
 	@Override
-	public Iterable<String> files(String directoryRelativePath) {
+	public Iterable<String> files(String directoryRelativePath) { 
         LinkedList<String> result = new LinkedList<String>();
         
         ObjectListing listObjects = s3.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(directoryRelativePath));
