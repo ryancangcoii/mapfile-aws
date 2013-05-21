@@ -94,19 +94,50 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 	@Override
 	public boolean isDirectory(String relativePath) throws FileNotFoundException {
 		
-		String path = fullPath(relativePath);
-		File file = new File(path);
-		boolean exists = file.isDirectory();
-		return exists;
+		boolean isDirectory = false;
+		
+        ObjectListing listObjects = s3.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(relativePath));
+        List<S3ObjectSummary> commonPrefixes = listObjects.getObjectSummaries();
+        for (S3ObjectSummary s3Obect : commonPrefixes) {
+        	String key = s3Obect.getKey();
+        	
+        	if (relativePath.endsWith("/"))
+        	key = key.substring(relativePath.length());
+        	
+        	//remove leading slashes
+        	if (key.startsWith("/"))
+        		key = key.substring(1);	
+        	
+        	//relative path is a directory
+        	if (!key.equals("") && !key.endsWith("/")) {
+        		isDirectory = true;
+        		break;
+        	}
+        		
+        	
+        }
+
+        return isDirectory;
 	}
 
 	@Override
 	public boolean isFile(String relativePath) throws FileNotFoundException {
 		
-		String path = fullPath(relativePath);
-		File file = new File(path);
-		boolean exists = file.isFile();
-		return exists;
+		boolean isFile = false;
+		
+        ObjectListing listObjects = s3.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(relativePath));
+        List<S3ObjectSummary> commonPrefixes = listObjects.getObjectSummaries();
+        for (S3ObjectSummary s3Obect : commonPrefixes) {
+        	String key = s3Obect.getKey();
+        	
+        	if (relativePath.equals(key)) {
+        		isFile = true;
+        		break;
+        	}
+        	
+        }
+
+        return isFile;
 	}
 
 	@Override
@@ -154,6 +185,7 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 	
 	@Override
 	public Iterable<String> files(String directoryRelativePath) {
+		
         LinkedList<String> result = new LinkedList<String>();
         
         ObjectListing listObjects = s3.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(directoryRelativePath));
