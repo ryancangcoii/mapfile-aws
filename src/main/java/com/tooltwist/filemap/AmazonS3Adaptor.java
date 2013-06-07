@@ -26,7 +26,6 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 	private AmazonS3Client s3;
 	private String bucketName;
 
-	@Override
 	public void init(XSelector config) throws FilemapException {
 		
 		//check the configuration specified
@@ -44,9 +43,13 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 			throw new FilemapException("Error parsing config.");
 		}
 		
-		//set s3 credentials 
-		AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-		s3 = new AmazonS3Client(awsCredentials);
+		try {
+			//set s3 credentials 
+			AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
+			s3 = new AmazonS3Client(awsCredentials);
+		} catch (Exception e) {
+			throw new FilemapException("Error initializing s3 object");
+		}
 		
 		//initialize region
 		try {
@@ -70,7 +73,6 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 
 	}
 	
-	@Override
 	public boolean exists(String relativePath) throws FileNotFoundException {
 		
 		boolean exists = false;
@@ -83,7 +85,6 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 		return exists;
 	}
 
-	@Override
 	public boolean isDirectory(String relativePath) throws FileNotFoundException {
 		
 		boolean isDirectory = true;
@@ -91,7 +92,6 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 		return isDirectory;
 	}
 
-	@Override
 	public boolean isFile(String relativePath) throws FileNotFoundException {
 		
 		boolean isFile = false;
@@ -111,21 +111,18 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
         return isFile;
 	}
 
-	@Override
 	public boolean mkdir(String relativePath) throws FileNotFoundException {
 		
 		return true;
 		 
 	}
 
-	@Override
 	public boolean mkdirs(String relativePath) throws FileNotFoundException {
 		
 		return mkdir(relativePath);
 		
 	}
 
-	@Override
 	public AwsPluginOutputStream openForWriting(String relativePath, boolean append) throws IOException {
 			
 		createBucketIfNotExist(bucketName);
@@ -140,7 +137,6 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 		
 	}
 
-	@Override
 	public InputStream openForReading(String relativePath) throws IOException {
 		
 		createBucketIfNotExist(bucketName);
@@ -154,7 +150,6 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 
 	}
 	
-	@Override
 	public Iterable<String> files(String directoryRelativePath) {
 		
         LinkedList<String> result = new LinkedList<String>();
@@ -193,15 +188,8 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 		return true;
 	}
 
-	@Override
 	public String fileDescription(String relativePath) {
 		return s3.getResourceUrl(bucketName, relativePath);
-	}
-	
-	private String fullPath(String relativePath) {
-		if (relativePath.startsWith("/"))
-			return baseDir + relativePath;
-		return baseDir + "/" + relativePath;
 	}
 	
 	/**
@@ -223,5 +211,7 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 			s3.createBucket(bucketName);
 		
 	}
+	
+
 	
 }
