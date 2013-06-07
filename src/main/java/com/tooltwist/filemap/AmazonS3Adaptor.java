@@ -1,8 +1,17 @@
 package com.tooltwist.filemap;
 
+<<<<<<< HEAD
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+=======
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,11 +20,23 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
+<<<<<<< HEAD
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
+=======
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.tooltwist.xdata.XDException;
 import com.tooltwist.xdata.XSelector;
@@ -42,6 +63,7 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 		} catch (XDException e) {
 			throw new FilemapException("Error parsing config.");
 		}
+<<<<<<< HEAD
 		
 		try {
 			//set s3 credentials 
@@ -51,6 +73,13 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 			throw new FilemapException("Error initializing s3 object");
 		}
 		
+=======
+		
+		//set s3 credentials 
+		AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
+		s3 = new AmazonS3Client(awsCredentials);
+		
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 		//initialize region
 		try {
 			
@@ -73,6 +102,10 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 
 	}
 	
+<<<<<<< HEAD
+=======
+	@Override
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 	public boolean exists(String relativePath) throws FileNotFoundException {
 		
 		boolean exists = false;
@@ -85,6 +118,7 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 		return exists;
 	}
 
+<<<<<<< HEAD
 	public boolean isDirectory(String relativePath) throws FileNotFoundException {
 		
 		boolean isDirectory = true;
@@ -111,18 +145,47 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
         return isFile;
 	}
 
+=======
+	@Override
+	public boolean isDirectory(String relativePath) throws FileNotFoundException {
+		
+		String path = fullPath(relativePath);
+		File file = new File(path);
+		boolean exists = file.isDirectory();
+		return exists;
+	}
+
+	@Override
+	public boolean isFile(String relativePath) throws FileNotFoundException {
+		
+		String path = fullPath(relativePath);
+		File file = new File(path);
+		boolean exists = file.isFile();
+		return exists;
+	}
+
+	@Override
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 	public boolean mkdir(String relativePath) throws FileNotFoundException {
 		
 		return true;
 		 
 	}
 
+<<<<<<< HEAD
+=======
+	@Override
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 	public boolean mkdirs(String relativePath) throws FileNotFoundException {
 		
 		return mkdir(relativePath);
 		
 	}
 
+<<<<<<< HEAD
+=======
+	@Override
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 	public AwsPluginOutputStream openForWriting(String relativePath, boolean append) throws IOException {
 			
 		createBucketIfNotExist(bucketName);
@@ -137,6 +200,10 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 		
 	}
 
+<<<<<<< HEAD
+=======
+	@Override
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 	public InputStream openForReading(String relativePath) throws IOException {
 		
 		createBucketIfNotExist(bucketName);
@@ -150,8 +217,13 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 
 	}
 	
+<<<<<<< HEAD
 	public Iterable<String> files(String directoryRelativePath) {
 		
+=======
+	@Override
+	public Iterable<String> files(String directoryRelativePath) { 
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
         LinkedList<String> result = new LinkedList<String>();
         
         ObjectListing listObjects = s3.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(directoryRelativePath));
@@ -178,7 +250,11 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 	
 	 /** Delete an object - if they key has any leading slashes, they are removed.
      */
+<<<<<<< HEAD
 	public boolean delete(String relativePath) {
+=======
+	public boolean deleteFile(String relativePath) {
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 		
 		if (relativePath.startsWith("/"))
 			relativePath = relativePath.substring(1);
@@ -190,6 +266,7 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 
 	public String fileDescription(String relativePath) {
 		return s3.getResourceUrl(bucketName, relativePath);
+<<<<<<< HEAD
 	}
 	
 	/**
@@ -213,5 +290,34 @@ public class AmazonS3Adaptor implements IFileGroupAdaptor {
 	}
 	
 
+=======
+	}
+	
+	private String fullPath(String relativePath) {
+		if (relativePath.startsWith("/"))
+			return baseDir + relativePath;
+		return baseDir + "/" + relativePath;
+	}
+	
+	/**
+	 * Check bucket if already exist, if not create bucket
+	 */
+	private void createBucketIfNotExist(String bucketName) {
+		
+		boolean isBucketExist = false;
+		List<Bucket> listBuckets = s3.listBuckets();
+		for (Bucket bucket :listBuckets) {
+			if (bucket.getName().equals(bucketName)) {
+				isBucketExist = true;
+				break;
+			}
+		}
+		
+		
+		if (!isBucketExist)
+			s3.createBucket(bucketName);
+		
+	}
+>>>>>>> 8924560c88a9925c86754d52fb8917166c109902
 	
 }
