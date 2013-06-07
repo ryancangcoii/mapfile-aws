@@ -50,22 +50,22 @@
   <!-- The login details are defined in settings.xml -->
   <distributionManagement> 
          <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
+            <id>parakeet-snapshots</id>
             <name>nexus snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>http://10.0.1.161:8081/nexus/content/repositories/snapshots/</url>
          </snapshotRepository>
          <repository>
-            <id>sonatype-nexus-staging</id>
+            <id>parakeet-staging</id>
             <name>nexus releases</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <url>http://10.0.1.161:8081/nexus/content/repositories/releases/</url>
         </repository>
     </distributionManagement>
   
   <developers>
     <developer>
-      <id>philcal</id>
-      <name>Philip Callender</name>
-      <email>philcal@mac.com</email>
+      <id>ryancangcoii</id>
+      <name>Ryan Cangco</name>
+      <email>ryan.cangco@twistresources.com</email>
     </developer>
   </developers>
   
