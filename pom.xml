@@ -3,7 +3,7 @@
   <groupId>com.tooltwist</groupId>
   <artifactId>filemap-aws</artifactId>
   <name>filemap-aws</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <description>Filemap plugin to save files on Amazon's AWS S3 cloud</description>
   <url>https://github.com/ryancangcoiii/mapfile-aws</url>
 
